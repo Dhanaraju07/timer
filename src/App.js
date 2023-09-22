@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
 
-function App() {
+const App = () => {
+  const [time, setTime] = useState(30);
+  const [disabledTime, setDisabledTime] = useState(false);
+
+  useEffect(() => {
+    let countdownTimer;
+    if (time > 0 && !disabledTime) {
+      countdownTimer = setInterval(() => {
+        setTime((prev) => prev - 1);
+      }, 1000);
+    } else if (time === 0) {
+      setDisabledTime(true);
+    }
+
+    return () => {
+      clearInterval(countdownTimer);
+    };
+  }, [time, disabledTime]);
+
+  const startTimer = () => {
+    if (disabledTime) {
+      setTime(30);
+      setDisabledTime(false);
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {disabledTime ? (
+        <>
+        <h1>OTP Expired</h1>
+        <button onClick={startTimer}>Resend</button>
+        </>
+      ) : (
+        <div>
+          <h1>Timer</h1>
+          <h3>{`00: ${time < 10 ? "0" : ""}${time}`}</h3>
+          
+        </div>
+      )}
+    </>
   );
-}
+};
 
-export default App;
+export default App
